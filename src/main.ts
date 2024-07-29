@@ -1,4 +1,5 @@
 import Bootstrap from './bootstrap';
+import Mongo from './infrastructure/mongo';
 import Router from './presentation/router';
 import Log from './tools/logger';
 import State from './tools/state';
@@ -19,20 +20,19 @@ class App {
   }
 
   private async handleInit(): Promise<void> {
-    return new Promise((resolve) => {
-      const router = new Router();
-      const bootstrap = new Bootstrap();
+    const router = new Router();
+    const bootstrap = new Bootstrap();
+    const mongo = new Mongo();
 
-      State.router = router;
-      State.controllers = bootstrap;
+    State.router = router;
+    State.controllers = bootstrap;
+    State.mongo = mongo;
 
-      bootstrap.init();
-      router.init();
+    await mongo.init();
+    bootstrap.init();
+    router.init();
 
-      Log.log('Server', 'Server started');
-
-      resolve();
-    });
+    Log.log('Server', 'Server started');
   }
 }
 

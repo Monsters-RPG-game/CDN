@@ -1,30 +1,23 @@
 import CreateImageController from './create';
 import GetImageController from './get';
-import { CreateImageUseCase } from '../../../application/createImageUseCase';
-import { GetImageUseCase } from '../../../application/getImage';
-import InMemoryImageRepository from '../../../infrastructure/inMemoryImageRepository';
-import type express from 'express';
+import CreateImageUseCase from '../../../application/image/create';
+import GetImageUseCase from '../../../application/image/get';
+import * as enums from '../../../enums';
+import ImageRepository from '../../../infrastructure/repositories/images';
+import AbstractController from '../../../tools/abstract/controller';
+import type ImageModel from '../../../infrastructure/models/image';
 
-export default class ImagesController {
-  private _getImage: GetImageController | null = null;
-  private _createImage: CreateImageController | null = null;
+export default class ImagesController extends AbstractController<enums.EControllers.Images> {
+  constructor(model: typeof ImageModel) {
+    super();
 
-  get getImage(): (req: express.Request, res: express.Response) => Promise<void> {
-    return (req: express.Request, res: express.Response) => this._getImage!.handle(req, res);
+    this.init(model);
   }
 
-  get createImage(): (req: express.Request, res: express.Response) => Promise<void> {
-    return (req: express.Request, res: express.Response) => this._createImage!.handle(req, res);
-  }
+  private init(model: typeof ImageModel): void {
+    const repo = new ImageRepository(model);
 
-  init(): void {
-    this.initImages();
-  }
-
-  private initImages(): void {
-    const repo = new InMemoryImageRepository();
-
-    this._getImage = new GetImageController(new GetImageUseCase(repo));
-    this._createImage = new CreateImageController(new CreateImageUseCase(repo));
+    this.register(enums.EControllerActions.Add, new CreateImageController(new CreateImageUseCase(repo)));
+    this.register(enums.EControllerActions.Get, new GetImageController(new GetImageUseCase(repo)));
   }
 }

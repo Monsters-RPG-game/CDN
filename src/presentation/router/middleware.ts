@@ -1,3 +1,6 @@
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 import { IncorrectDataType, InternalError } from '../../errors';
 import Log from '../../tools/logger';
@@ -9,6 +12,14 @@ export default class Middleware {
   generateMiddleware(app: Express): void {
     app.use(express.json({ limit: '500kb' }));
     app.use(express.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(cookieParser());
+    app.use(
+      cors({
+        origin: '*',
+        credentials: true,
+      }),
+    );
 
     app.use((_req: express.Request, res, next: express.NextFunction) => {
       res.header('Content-Type', 'application/json;charset=UTF-8');
