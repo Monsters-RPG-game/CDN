@@ -1,23 +1,30 @@
 import express from 'express';
-import AppRouter from './router.js';
+import Middleware from './middleware';
+import AppRouter from './router';
 import Log from '../../tools/logger';
 import http from 'http';
 
 export default class Router {
   private readonly _app: express.Express;
+  private readonly _middleware: Middleware;
   private readonly _router: AppRouter;
   private _server: http.Server | undefined = undefined;
 
   constructor() {
     this._app = express();
+    this._middleware = new Middleware();
     this._router = new AppRouter(this.app);
   }
 
-  get app(): express.Express {
+  private get app(): express.Express {
     return this._app;
   }
 
-  get router(): AppRouter {
+  private get middleware(): Middleware {
+    return this._middleware;
+  }
+
+  private get router(): AppRouter {
     return this._router;
   }
 
@@ -26,8 +33,10 @@ export default class Router {
   }
 
   init(): void {
+    this.initMiddleware();
     this.initRouter();
     this.initServer();
+    this.initErrHandler();
   }
 
   /**
@@ -39,6 +48,20 @@ export default class Router {
 
     this.server.closeAllConnections();
     this.server.close();
+  }
+
+  /**
+   * Init middleware
+   */
+  private initMiddleware(): void {
+    this.middleware.generateMiddleware(this.app);
+  }
+
+  /**
+   * Init err handler, catching errors in whole app
+   */
+  private initErrHandler(): void {
+    this.middleware.generateErrHandler(this.app);
   }
 
   /**

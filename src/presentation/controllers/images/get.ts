@@ -1,18 +1,13 @@
-import type { GetImageUseCase } from '../../../application/getImage';
+import mongoose from 'mongoose';
+import AbstractInnerController from '../../../tools/abstract/innerController';
+import type * as enums from '../../../enums';
 import type express from 'express';
 
-export default class GetImageController {
-  private readonly _useCase: GetImageUseCase;
-
-  private get useCase(): GetImageUseCase {
-    return this._useCase;
-  }
-
-  constructor(useCase: GetImageUseCase) {
-    this._useCase = useCase;
-  }
-
-  async handle(req: express.Request, res: express.Response): Promise<void> {
+export default class GetImageController extends AbstractInnerController<
+  enums.EControllers.Images,
+  enums.EControllerActions.Get
+> {
+  override async handle(req: express.Request, res: express.Response): Promise<void> {
     this.validate(req);
 
     const result = await this.useCase.execute({
@@ -23,6 +18,9 @@ export default class GetImageController {
   }
 
   private validate(req: express.Request): void {
-    if (!req.query.name) throw new Error('Name not provided');
+    const value = req.query.name as string;
+
+    if (!value) throw new Error('Name not provided');
+    if (!mongoose.Types.ObjectId.isValid(value)) throw new Error('Incorrect objectId');
   }
 }
