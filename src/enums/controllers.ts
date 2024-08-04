@@ -1,6 +1,6 @@
 export enum EControllerActions {
   Get = 'get',
-  Add = 'add',
+  Transfer = 'transfer',
 }
 
 export enum EControllers {

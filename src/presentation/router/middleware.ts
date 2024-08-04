@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import { IncorrectDataType, InternalError } from '../../errors';
+import { IncorrectDataType, InternalError, FileTooBigError } from '../../errors';
 import Log from '../../tools/logger';
 import errLogger from '../../tools/logger/logger';
 import type { IFullError } from '../../types/error.js';
@@ -38,6 +38,8 @@ export default class Middleware {
           .error(JSON.stringify(err));
         const error = err as IFullError;
 
+        if (error.name === 'MulterError') return this.handleMulterError(res, error);
+
         if (error.message.includes('is not valid JSON')) {
           Log.error('Middleware', 'Received req is not of json type', error.message, error.stack);
           const { message, name, status } = new IncorrectDataType();
@@ -57,5 +59,25 @@ export default class Middleware {
         return res.status(status).json({ message, code, name });
       },
     );
+  }
+
+  private handleMulterError(res: express.Response, error: IFullError): void {
+    switch (error.message) {
+      case 'File too large':
+        res.status(400).json({
+          message: new FileTooBigError().message,
+          name: new FileTooBigError().name,
+          code: new FileTooBigError().code,
+        });
+        break;
+      default:
+        res.status(500).json({
+          message: new InternalError().message,
+          code: new InternalError().code,
+          name: new InternalError().name,
+          status: new InternalError().status,
+        });
+        break;
+    }
   }
 }

@@ -1,10 +1,10 @@
 import type * as enums from '../enums';
 import type ImagesController from '../presentation/controllers/images';
-import type AddImagesController from '../presentation/controllers/images/create';
 import type GetImagesController from '../presentation/controllers/images/get';
+import type TransferImagesController from '../presentation/controllers/images/transfer';
 
 export interface IImagesController {
-  [enums.EControllerActions.Add]: AddImagesController;
+  [enums.EControllerActions.Transfer]: TransferImagesController;
   [enums.EControllerActions.Get]: GetImagesController;
 }
 
