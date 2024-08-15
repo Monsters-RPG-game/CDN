@@ -6,12 +6,11 @@ import type express from 'express';
 export default class TransferImageController {
   private readonly _useCase: TransferImageUseCase;
 
-  private get useCase(): TransferImageUseCase {
-    return this._useCase;
-  }
-
   constructor(useCase: TransferImageUseCase) {
     this._useCase = useCase;
+  }
+  private get useCase(): TransferImageUseCase {
+    return this._useCase;
   }
 
   async handle(req: express.Request, res: express.Response): Promise<void> {

@@ -9,6 +9,15 @@ export default class GetImageController extends AbstractInnerController<
   enums.EControllers.Images,
   enums.EControllerActions.Get
 > {
+  private setHeaders(res: express.Response, location: string): void {
+    if (location.includes('jpg')) {
+      res.setHeader('Content-Type', 'image/jpg');
+    } else if (location.includes('jpeg')) {
+      res.setHeader('Content-Type', 'image/jpeg');
+    } else if (location.includes('png')) {
+      res.setHeader('Content-Type', 'image/png');
+    }
+  }
   override async handle(req: express.Request, res: express.Response): Promise<void> {
     this.validate(req);
 
@@ -53,15 +62,5 @@ export default class GetImageController extends AbstractInnerController<
         return reject(err);
       });
     });
-  }
-
-  private setHeaders(res: express.Response, location: string): void {
-    if (location.includes('jpg')) {
-      res.setHeader('Content-Type', 'image/jpg');
-    } else if (location.includes('jpeg')) {
-      res.setHeader('Content-Type', 'image/jpeg');
-    } else if (location.includes('png')) {
-      res.setHeader('Content-Type', 'image/png');
-    }
   }
 }
