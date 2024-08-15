@@ -7,12 +7,11 @@ export default abstract class AbstractInnerController<T extends enums.EControlle
 {
   private readonly _useCase: types.IInnerControllerUseCase[T][N];
 
-  protected get useCase(): types.IInnerControllerUseCase[T][N] {
-    return this._useCase;
-  }
-
   constructor(useCase: types.IInnerControllerUseCase[T][N]) {
     this._useCase = useCase;
+  }
+  protected get useCase(): types.IInnerControllerUseCase[T][N] {
+    return this._useCase;
   }
 
   async handle(_req: express.Request, _res: express.Response): Promise<void> {

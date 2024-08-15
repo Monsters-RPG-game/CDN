@@ -16,7 +16,10 @@ export default abstract class AbstractRepository<T extends Document, U extends M
   }
 
   async get(_id: unknown): Promise<types.IRepositoryGetData[Z] | null> {
-    return this.model.findOne({ _id } as FilterQuery<Record<string, unknown>>).lean();
+    return this.model
+      .findOne({ _id } as FilterQuery<Record<string, unknown>>)
+      .select({ __v: false })
+      .lean();
   }
 
   async add(data: types.IRepositoryAddData[Z]): Promise<string> {
