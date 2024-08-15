@@ -1,11 +1,13 @@
 import Log from './logger';
 import type Bootstrap from '../bootstrap';
+import type Mongo from '../infrastructure/mongo';
 import type Router from '../presentation/router';
 import type { IState } from '../types';
 
 class State implements IState {
   private _router: Router | null = null;
   private _controllers: Bootstrap | null = null;
+  private _mongo: Mongo | null = null;
 
   get router(): Router {
     return this._router!;
@@ -21,6 +23,14 @@ class State implements IState {
 
   set controllers(val: Bootstrap) {
     this._controllers = val;
+  }
+
+  get mongo(): Mongo {
+    return this._mongo!;
+  }
+
+  set mongo(value: Mongo) {
+    this._mongo = value;
   }
 
   async kill(): Promise<void> {
