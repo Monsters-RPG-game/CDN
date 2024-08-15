@@ -9,17 +9,16 @@ export default class TransferImageUseCase implements IUseCase<ITransferImageDto,
   private readonly _imageRepository: IImageRepository;
   private readonly _fileRepository: IFileRepository;
 
+  constructor(imageRepository: IImageRepository, fileRepository: IFileRepository) {
+    this._fileRepository = fileRepository;
+    this._imageRepository = imageRepository;
+  }
   private get imageRepository(): IImageRepository {
     return this._imageRepository;
   }
 
   private get fileRepository(): IFileRepository {
     return this._fileRepository;
-  }
-
-  constructor(imageRepository: IImageRepository, fileRepository: IFileRepository) {
-    this._fileRepository = fileRepository;
-    this._imageRepository = imageRepository;
   }
 
   async execute(input: ITransferImageDto): Promise<ITransferImageResult> {

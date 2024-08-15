@@ -29,7 +29,7 @@ export default class FilesRepository implements IFileRepository {
 
       const files = fs.readdirSync(pathOnly);
       if (!files.includes(fileName)) throw new FileMovedError();
-    } catch (err) {
+    } catch (_err) {
       Log.error('File repository', `Cannot load file from path ${path}`);
       throw new FileMovedError();
     }
